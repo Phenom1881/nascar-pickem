@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026 NASCAR Pick 'Em</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #E8231A;
+    --gold: #F5A623;
+    --dark: #111111;
+    --darker: #0a0a0a;
+    --card: #1a1a1a;
+    --border: #2a2a2a;
+    --text: #e8e8e8;
+    --muted: #888;
+    --justin-bg: #1a3a6b;
+    --justin-accent: #4a90d9;
+    --joseph-bg: #6b1a1a;
+    --joseph-accent: #F5A623;
+    --highlight-dupe: rgba(232, 35, 26, 0.25);
+    --highlight-dupe-border: #E8231A;
+    --bye: #222;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--darker);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--dark);
+    border-bottom: 3px solid var(--red);
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 72px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 2px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .logo .flag { font-size: 22px; }
+  .logo span { color: var(--red); }
+
+  .season-badge {
+    background: var(--red);
+    color: #fff;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 1px;
+    padding: 4px 14px;
+    border-radius: 4px;
+  }
+
+  /* STATS CARDS */
+  .stats-section {
+    padding: 24px 24px 0;
+  }
+
+  .stats-section h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+
+  .stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+
+  .stat-card.justin::before { background: var(--justin-accent); }
+  .stat-card.joseph::before { background: var(--joseph-accent); }
+
+  .stat-card .rank {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 42px;
+    line-height: 1;
+    color: var(--border);
+    position: absolute;
+    right: 16px;
+    top: 8px;
+  }
+
+  .stat-card .player {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+
+  .stat-card .name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+
+  .stat-card.justin .name { color: var(--justin-accent); }
+  .stat-card.joseph .name { color: var(--joseph-accent); }
+
+  .stat-card .avg {
+    font-size: 28px;
+    font-weight: 600;
+    line-height: 1;
+  }
+
+  .stat-card .avg-label {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  .stat-card .races {
+    margin-top: 8px;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  /* TABS */
+  .tabs {
+    display: flex;
+    gap: 4px;
+    padding: 0 24px;
+    margin-bottom: 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .tab {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 15px;
+    letter-spacing: 1px;
+    padding: 10px 20px;
+    cursor: pointer;
+    border: none;
+    background: none;
+    color: var(--muted);
+    border-bottom: 3px solid transparent;
+    margin-bottom: -1px;
+    transition: color 0.2s, border-color 0.2s;
+  }
+
+  .tab.active {
+    color: #fff;
+    border-bottom-color: var(--red);
+  }
+
+  .tab:hover:not(.active) { color: var(--text); }
+
+  /* TABLE SECTION */
+  .table-section {
+    padding: 20px 24px 40px;
+    overflow-x: auto;
+  }
+
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* PICK EM TABLE */
+  .picks-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 860px;
+    font-size: 13px;
+  }
+
+  .picks-table th {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px;
+    letter-spacing: 1px;
+    padding: 10px 12px;
+    text-align: center;
+    border-bottom: 2px solid var(--border);
+    white-space: nowrap;
+    color: var(--muted);
+  }
+
+  .picks-table th.race-col { text-align: left; color: var(--text); }
+
+  .picks-table td {
+    padding: 9px 12px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+
+  .picks-table td.race-name {
+    text-align: left;
+    font-style: italic;
+    color: var(--text);
+  }
+
+  .picks-table tr:hover td { background: rgba(255,255,255,0.03); }
+
+  /* Header groups */
+  .th-justin {
+    background: rgba(26,58,107,0.5);
+    color: var(--justin-accent) !important;
+    border-bottom: 2px solid var(--justin-accent) !important;
+  }
+
+  .th-joseph {
+    background: rgba(107,26,26,0.5);
+    color: var(--joseph-accent) !important;
+    border-bottom: 2px solid var(--joseph-accent) !important;
+  }
+
+  /* Cell colors */
+  .justin-pick { background: rgba(26,58,107,0.15); }
+  .joseph-pick { background: rgba(107,26,26,0.15); }
+  .finish-cell { color: var(--muted); font-size: 12px; }
+  .finish-cell.top5 { color: #4ade80; font-weight: 600; }
+  .finish-cell.top10 { color: #a3e635; }
+
+  /* Duplicate highlight */
+  .dupe {
+    background: var(--highlight-dupe) !important;
+    color: var(--highlight-dupe-border) !important;
+    font-weight: 600;
+    border-radius: 3px;
+  }
+
+  /* BYE WEEK */
+  .bye-row td {
+    background: var(--bye);
+    text-align: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px;
+    letter-spacing: 3px;
+    color: var(--muted);
+    padding: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* CHAMPION row */
+  .champ-row td {
+    background: linear-gradient(90deg, rgba(232,35,26,0.1), transparent);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px;
+    letter-spacing: 1px;
+    color: var(--gold);
+    border-top: 2px solid var(--red);
+  }
+
+  /* Playoff section */
+  .playoff-header td {
+    background: var(--red);
+    color: #fff;
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 2px;
+    font-size: 12px;
+    padding: 5px 12px;
+    border: none;
+  }
+
+  /* STATS TABLE */
+  .stats-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 500px;
+  }
+
+  .stats-table th {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px;
+    letter-spacing: 1px;
+    padding: 10px 16px;
+    text-align: left;
+    border-bottom: 2px solid var(--border);
+    color: var(--muted);
+  }
+
+  .stats-table td {
+    padding: 9px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .stats-table tr:hover td { background: rgba(255,255,255,0.03); }
+
+  .stats-table .current-race {
+    background: rgba(245,166,35,0.08);
+  }
+
+  /* Legend */
+  .legend {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    padding: 0 24px 12px;
+    flex-wrap: wrap;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .legend-dot {
+    width: 10px; height: 10px;
+    border-radius: 2px;
+  }
+
+  .dot-dupe { background: var(--highlight-dupe-border); opacity: 0.6; }
+  .dot-top5 { background: #4ade80; }
+  .dot-top10 { background: #a3e635; }
+
+  /* Footer */
+  .current-week-row td {
+    background: rgba(245, 166, 35, 0.08) !important;
+    border-top: 1px solid rgba(245,166,35,0.4);
+    border-bottom: 1px solid rgba(245,166,35,0.4);
+  }
+  .current-week-row td.race-name {
+    color: var(--gold) !important;
+    font-weight: 600;
+  }
+
+  .date-badge {
+    display: inline-block;
+    font-size: 10px;
+    color: var(--muted);
+    background: rgba(255,255,255,0.05);
+    border-radius: 3px;
+    padding: 1px 5px;
+    margin-left: 6px;
+    vertical-align: middle;
+    font-style: normal;
+  }
+
+  .pick-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 1px;
+    padding: 2px 10px;
+    border-radius: 3px;
+    background: rgba(74,144,217,0.15);
+    color: var(--justin-accent);
+    border: 1px solid rgba(74,144,217,0.3);
+  }
+  .pick-badge.joseph {
+    background: rgba(245,166,35,0.15);
+    color: var(--joseph-accent);
+    border-color: rgba(245,166,35,0.3);
+  }
+  .pick-badge.hm {
+    background: rgba(232,35,26,0.12);
+    color: #e87a72;
+    border-color: rgba(232,35,26,0.3);
+  }
+  .pick-badge.correct {
+    background: rgba(74,222,128,0.15);
+    color: #4ade80;
+    border-color: rgba(74,222,128,0.3);
+  }
+  .pick-badge.incorrect {
+    background: rgba(100,100,100,0.15);
+    color: var(--muted);
+    border-color: rgba(100,100,100,0.2);
+    text-decoration: line-through;
+  }
+
+  footer {
+    text-align: center;
+    padding: 20px;
+    color: var(--muted);
+    font-size: 11px;
+    border-top: 1px solid var(--border);
+    margin-top: 20px;
+  }
+
+  .update-note {
+    background: rgba(245,166,35,0.1);
+    border: 1px solid rgba(245,166,35,0.3);
+    border-radius: 6px;
+    padding: 8px 14px;
+    font-size: 12px;
+    color: var(--gold);
+    margin: 0 24px 16px;
+    display: inline-block;
+  }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <span class="flag">🏁</span>
+    2026 NASCAR <span>&nbsp;Pick 'Em</span>
+  </div>
+  <div class="season-badge">2026 Season</div>
+</header>
+
+<!-- STANDINGS CARDS -->
+<div class="stats-section">
+  <h2>Current Standings</h2>
+  <div class="stats-grid" id="standings-grid">
+    <!-- Populated by renderStandings() -->
+  </div>
+</div>
+
+<!-- LEGEND -->
+<div style="padding: 0 24px 4px;">
+  <span class="update-note">⚑ Last updated: April 12, 2026 — Bristol (Week 10 of 36)</span>
+</div>
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot dot-dupe"></div> Duplicate pick (flagged)</div>
+  <div class="legend-item"><div class="legend-dot dot-top5"></div> Top 5 finish</div>
+  <div class="legend-item"><div class="legend-dot dot-top10"></div> Top 10 finish</div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab active" onclick="showTab('picks')">Pick 'Em Sheet</button>
+  <button class="tab" onclick="showTab('stats')">Running Averages</button>
+  <button class="tab" onclick="showTab('justin-chase')">Justin's Chase Picks</button>
+  <button class="tab" onclick="showTab('joseph-chase')">Joseph's Chase Picks</button>
+  <button class="tab" onclick="showTab('drivers')">Available Drivers</button>
+</div>
+
+<!-- PICKS TAB -->
+<div class="table-section">
+  <div id="tab-picks" class="tab-content active">
+    <table class="picks-table">
+      <thead>
+        <tr>
+          <th class="race-col" rowspan="2">Race</th>
+          <th class="th-justin" colspan="4">Justin (Hamlin)</th>
+          <th class="th-joseph" colspan="4">Joseph (Bryon)</th>
+        </tr>
+        <tr>
+          <th class="th-justin">Main Pick</th>
+          <th class="th-justin">Finish</th>
+          <th class="th-justin">Surprise Pick</th>
+          <th class="th-justin">Finish</th>
+          <th class="th-joseph">Main Pick</th>
+          <th class="th-joseph">Finish</th>
+          <th class="th-joseph">Surprise Pick</th>
+          <th class="th-joseph">Finish</th>
+        </tr>
+      </thead>
+      <tbody id="picks-body">
+      </tbody>
+    </table>
+  </div>
+
+  <!-- STATS TAB -->
+  <div id="tab-stats" class="tab-content">
+    <!-- CHART -->
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:20px;margin-bottom:24px;">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;color:var(--muted);margin-bottom:4px;">Running Average Finish by Week</div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:16px;">Lower is better &mdash; excludes exhibition races</div>
+      <canvas id="avgChart" height="100"></canvas>
+      <div style="display:flex;gap:20px;flex-wrap:wrap;margin-top:14px;">
+        <div style="display:flex;align-items:center;gap:6px;font-size:12px;"><span style="display:inline-block;width:28px;height:3px;background:#4a90d9;border-radius:2px;"></span>Justin Main (JHP)</div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:12px;"><span style="display:inline-block;width:28px;height:3px;background:#7ab8f5;border-radius:2px;border-top:2px dashed #7ab8f5;"></span>Justin Surprise (JHS)</div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:12px;"><span style="display:inline-block;width:28px;height:3px;background:#F5A623;border-radius:2px;"></span>Joseph Main (JMP)</div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:12px;"><span style="display:inline-block;width:28px;height:3px;background:#f5c97a;border-radius:2px;border-top:2px dashed #f5c97a;"></span>Joseph Surprise (JMS)</div>
+      </div>
+    </div>
+    <!-- TABLE -->
+    <table class="stats-table">
+      <thead>
+        <tr>
+          <th>Race</th>
+          <th style="color:var(--justin-accent)">Justin Main (JHP)</th>
+          <th style="color:var(--justin-accent)">Justin Surprise (JHS)</th>
+          <th style="color:var(--joseph-accent)">Joseph Main (JMP)</th>
+          <th style="color:var(--joseph-accent)">Joseph Surprise (JMS)</th>
+          <th>Races Scored</th>
+        </tr>
+      </thead>
+      <tbody id="stats-body">
+      </tbody>
+    </table>
+  </div>
+  <!-- JUSTIN CHASE TAB -->
+  <div id="tab-justin-chase" class="tab-content">
+    <div style="max-width:600px;">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:var(--justin-accent);margin-bottom:4px;">Justin's Championship Picks</div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:20px;">16 Chase drivers + 1 Honorable Mention &mdash; field locks after Daytona</div>
+      <table class="stats-table" style="max-width:500px;">
+        <thead>
+          <tr>
+            <th style="width:60px;">Car #</th>
+            <th>Driver</th>
+            <th style="width:140px;">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>#1</td><td>Ross Chastain</td><td><span class="pick-badge regular">Pick</span></td></tr>
+          <tr><td>#2</td><td>Austin Cindric</td><td><span class="pick-badge regular">Pick</span></td></tr>
+          <tr><td>#5</td><td>Kyle Larson</td><td><span class="pick-badge regular">Pick</span></td></tr>
+          <tr><td>#8</td><td>Kyle Busch</td><td><span class="pick-badge regular">Pick</span></td></tr>
+          <tr><td>#9</td><td>Chase Elliott</td><td><span class="pick-badge regular">Pick</span></td></tr>
+          <tr><td>#11</td><td>Denny Hamlin</td><td><span class="pick-badge regular">Pick</span></td></tr>
+          <tr><td>#12</td><td>Ryan Blaney</td><td><span class="pick-badge regular">Pick</span></td></tr>
+          <tr><td>#19</td><td>Chase Briscoe</td><td><span class="pick-badge regular">Pick</span></td></tr>
+          <tr><td>#20</td><td>Christopher Bell</td><td><span class="pick-badge regular">Pick</span></td></tr>
+          <tr><td>#22</td><td>Joey Logano</td><td><span class="pick-badge regular">Pick</span></td></tr>
+          <tr><td>#23</td><td>Bubba Wallace</td><td><span class="pick-badge regular">Pick</span></td></tr>
+          <tr><td>#24</td><td>William Byron</td><td><span class="pick-badge regular">Pick</span></td></tr>
+          <tr><td>#45</td><td>Tyler Reddick</td><td><span class="pick-badge regular">Pick</span></td></tr>
+          <tr><td>#48</td><td>Alex Bowman</td><td><span class="pick-badge regular">Pick</span></td></tr>
+          <tr><td>#54</td><td>Ty Gibbs</td><td><span class="pick-badge hm">Honorable Mention</span></td></tr>
+          <tr><td>#60</td><td>Ryan Preece</td><td><span class="pick-badge regular">Pick</span></td></tr>
+          <tr><td>#97</td><td>Shane Van Gisbergen</td><td><span class="pick-badge regular">Pick</span></td></tr>
+        </tbody>
+      </table>
+      <div style="margin-top:16px;font-size:11px;color:var(--muted);">* Chase field officially locks after the final Daytona race. Correct picks will be highlighted once the field is set.</div>
+    </div>
+  </div>
+
+  <!-- JOSEPH CHASE TAB -->
+  <div id="tab-joseph-chase" class="tab-content">
+    <div style="max-width:600px;">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:var(--joseph-accent);margin-bottom:4px;">Joseph's Championship Picks</div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:20px;">16 Chase drivers + 1 Honorable Mention &mdash; field locks after Daytona</div>
+      <table class="stats-table" style="max-width:500px;">
+        <thead>
+          <tr>
+            <th style="width:60px;">Car #</th>
+            <th>Driver</th>
+            <th style="width:140px;">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>#1</td><td>Ross Chastain</td><td><span class="pick-badge regular joseph">Pick</span></td></tr>
+          <tr><td>#5</td><td>Kyle Larson</td><td><span class="pick-badge regular joseph">Pick</span></td></tr>
+          <tr><td>#8</td><td>Kyle Busch</td><td><span class="pick-badge hm">Honorable Mention</span></td></tr>
+          <tr><td>#9</td><td>Chase Elliott</td><td><span class="pick-badge regular joseph">Pick</span></td></tr>
+          <tr><td>#11</td><td>Denny Hamlin</td><td><span class="pick-badge regular joseph">Pick</span></td></tr>
+          <tr><td>#12</td><td>Ryan Blaney</td><td><span class="pick-badge regular joseph">Pick</span></td></tr>
+          <tr><td>#17</td><td>Chris Buescher</td><td><span class="pick-badge regular joseph">Pick</span></td></tr>
+          <tr><td>#19</td><td>Chase Briscoe</td><td><span class="pick-badge regular joseph">Pick</span></td></tr>
+          <tr><td>#20</td><td>Christopher Bell</td><td><span class="pick-badge regular joseph">Pick</span></td></tr>
+          <tr><td>#22</td><td>Joey Logano</td><td><span class="pick-badge regular joseph">Pick</span></td></tr>
+          <tr><td>#23</td><td>Bubba Wallace</td><td><span class="pick-badge regular joseph">Pick</span></td></tr>
+          <tr><td>#24</td><td>William Byron</td><td><span class="pick-badge regular joseph">Pick</span></td></tr>
+          <tr><td>#45</td><td>Tyler Reddick</td><td><span class="pick-badge regular joseph">Pick</span></td></tr>
+          <tr><td>#48</td><td>Alex Bowman</td><td><span class="pick-badge regular joseph">Pick</span></td></tr>
+          <tr><td>#77</td><td>Carson Hocevar</td><td><span class="pick-badge regular joseph">Pick</span></td></tr>
+          <tr><td>#88</td><td>Connor Zilisch</td><td><span class="pick-badge regular joseph">Pick</span></td></tr>
+          <tr><td>#97</td><td>Shane Van Gisbergen</td><td><span class="pick-badge regular joseph">Pick</span></td></tr>
+        </tbody>
+      </table>
+      <div style="margin-top:16px;font-size:11px;color:var(--muted);">* Chase field officially locks after the final Daytona race. Correct picks will be highlighted once the field is set.</div>
+    </div>
+  </div>
+  <!-- DRIVERS TAB -->
+  <div id="tab-drivers" class="tab-content">
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:var(--text);margin-bottom:4px;">2026 Cup Series — Available Drivers</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:20px;">Full-time & partial entries eligible for picks &mdash; 38 drivers listed</div>
+    <table class="stats-table">
+      <thead>
+        <tr>
+          <th style="width:70px;">Car #</th>
+          <th>Driver</th>
+          <th>Team</th>
+          <th style="width:100px;">Manufacturer</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>#1</td><td>Ross Chastain</td><td>Trackhouse Racing</td><td>Chevrolet</td></tr>
+        <tr><td>#2</td><td>Austin Cindric</td><td>Team Penske</td><td>Ford</td></tr>
+        <tr><td>#3</td><td>Austin Dillon</td><td>Richard Childress Racing</td><td>Chevrolet</td></tr>
+        <tr><td>#4</td><td>Noah Gragson</td><td>Front Row Motorsports</td><td>Ford</td></tr>
+        <tr><td>#5</td><td>Kyle Larson</td><td>Hendrick Motorsports</td><td>Chevrolet</td></tr>
+        <tr><td>#6</td><td>Brad Keselowski</td><td>RFK Racing</td><td>Ford</td></tr>
+        <tr><td>#7</td><td>Daniel Suárez</td><td>Spire Motorsports</td><td>Chevrolet</td></tr>
+        <tr><td>#8</td><td>Kyle Busch</td><td>Richard Childress Racing</td><td>Chevrolet</td></tr>
+        <tr><td>#9</td><td>Chase Elliott</td><td>Hendrick Motorsports</td><td>Chevrolet</td></tr>
+        <tr><td>#10</td><td>Ty Dillon</td><td>Kaulig Racing</td><td>Chevrolet</td></tr>
+        <tr><td>#11</td><td>Denny Hamlin</td><td>Joe Gibbs Racing</td><td>Toyota</td></tr>
+        <tr><td>#12</td><td>Ryan Blaney</td><td>Team Penske</td><td>Ford</td></tr>
+        <tr><td>#16</td><td>A.J. Allmendinger</td><td>Kaulig Racing</td><td>Chevrolet</td></tr>
+        <tr><td>#17</td><td>Chris Buescher</td><td>RFK Racing</td><td>Ford</td></tr>
+        <tr><td>#19</td><td>Chase Briscoe</td><td>Joe Gibbs Racing</td><td>Toyota</td></tr>
+        <tr><td>#20</td><td>Christopher Bell</td><td>Joe Gibbs Racing</td><td>Toyota</td></tr>
+        <tr><td>#21</td><td>Josh Berry</td><td>Wood Brothers Racing</td><td>Ford</td></tr>
+        <tr><td>#22</td><td>Joey Logano</td><td>Team Penske</td><td>Ford</td></tr>
+        <tr><td>#23</td><td>Bubba Wallace</td><td>23XI Racing</td><td>Toyota</td></tr>
+        <tr><td>#24</td><td>William Byron</td><td>Hendrick Motorsports</td><td>Chevrolet</td></tr>
+        <tr><td>#34</td><td>Todd Gilliland</td><td>Front Row Motorsports</td><td>Ford</td></tr>
+        <tr><td>#35</td><td>Riley Herbst</td><td>23XI Racing</td><td>Toyota</td></tr>
+        <tr><td>#38</td><td>Zane Smith</td><td>Front Row Motorsports</td><td>Ford</td></tr>
+        <tr><td>#41</td><td>Cole Custer</td><td>Haas Factory Team</td><td>Chevrolet</td></tr>
+        <tr><td>#42</td><td>John Hunter Nemechek</td><td>Legacy Motor Club</td><td>Toyota</td></tr>
+        <tr><td>#43</td><td>Erik Jones</td><td>Legacy Motor Club</td><td>Toyota</td></tr>
+        <tr><td>#45</td><td>Tyler Reddick</td><td>23XI Racing</td><td>Toyota</td></tr>
+        <tr><td>#47</td><td>Ricky Stenhouse Jr.</td><td>Hyak Motorsports</td><td>Chevrolet</td></tr>
+        <tr><td>#48</td><td>Alex Bowman</td><td>Hendrick Motorsports</td><td>Chevrolet</td></tr>
+        <tr><td>#54</td><td>Ty Gibbs</td><td>Joe Gibbs Racing</td><td>Toyota</td></tr>
+        <tr><td>#60</td><td>Ryan Preece</td><td>RFK Racing</td><td>Ford</td></tr>
+        <tr><td>#71</td><td>Michael McDowell</td><td>Spire Motorsports</td><td>Chevrolet</td></tr>
+        <tr><td>#77</td><td>Carson Hocevar</td><td>Spire Motorsports</td><td>Chevrolet</td></tr>
+        <tr><td>#88</td><td>Connor Zilisch</td><td>Trackhouse Racing</td><td>Chevrolet</td></tr>
+        <tr><td>#97</td><td>Shane van Gisbergen</td><td>Trackhouse Racing</td><td>Chevrolet</td></tr>
+        <tr style="opacity:0.6;"><td>#40</td><td>Justin Allgaier</td><td>JR Motorsports (part-time)</td><td>Chevrolet</td></tr>
+        <tr style="opacity:0.6;"><td>#67</td><td>Corey Heim</td><td>23XI Racing (part-time)</td><td>Toyota</td></tr>
+        <tr style="opacity:0.6;"><td>#84</td><td>Jimmie Johnson</td><td>Legacy Motor Club (part-time)</td><td>Toyota</td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:14px;font-size:11px;color:var(--muted);">* Dimmed entries are part-time drivers. Manufacturer listed per 2026 season alignment.</div>
+  </div>
+</div>
+
+<footer>
+  2026 NASCAR Cup Series Pick 'Em &nbsp;·&nbsp; Update picks.js each week and push to GitHub Pages
+</footer>
+
+<script>
+// ============================================================
+// DATA — update this each week by editing the races array
+// ============================================================
+const RACES = [
+  { race: "Bowman Gray",       date: "Feb 4",  exhibition: true, jPick: "Blaney",   jFinish: 3,  jSurprise: "Preece",       jSFinish: 1,  mPick: "Bell",      mFinish: 13, mSurprise: "Gibbs",         mSFinish: 14 },
+  { race: "Daytona Duels",     date: "Feb 12", exhibition: true, jPick: "Bowman",   jFinish: 10, jSurprise: "Allagier",     jSFinish: 20, mPick: "Logano",    mFinish: 1,  mSurprise: "Cindric",       mSFinish: 17 },
+  { race: "Daytona 500",       date: "Feb 15", jPick: "Bryon",    jFinish: 12, jSurprise: "Berry",        jSFinish: 9,  mPick: "Gilliland", mFinish: 39, mSurprise: "Nemechek",      mSFinish: 26 },
+  { race: "EchoPark (Atlanta)",date: "Feb 22", jPick: "Busch",    jFinish: 34, jSurprise: "Suarez",       jSFinish: 5,  mPick: "Buescher",  mFinish: 15, mSurprise: "Stenhouse Jr.", mSFinish: 36 },
+  { race: "COTA",              date: "Mar 1",  jPick: "Bowman",   jFinish: 36, jSurprise: "McDowell",     jSFinish: 5,  mPick: "Zilisch",   mFinish: 14, mSurprise: "Custer",        mSFinish: 29 },
+  { race: "Phoenix",           date: "Mar 8",  jPick: "Bell",     jFinish: 2,  jSurprise: "Berry",        jSFinish: 32, mPick: "Larson",    mFinish: 3,  mSurprise: "Busch",         mSFinish: 17 },
+  { race: "Las Vegas",         date: "Mar 15", jPick: "Chastain", jFinish: 17, jSurprise: "Suarez",       jSFinish: 18, mPick: "Logano",    mFinish: 15, mSurprise: "Gibbs",         mSFinish: 5  },
+  { race: "Darlington",        date: "Mar 22", jPick: "Elliott",  jFinish: 15, jSurprise: "Preece",       jSFinish: 13, mPick: "Briscoe",   mFinish: 12, mSurprise: "Jones",         mSFinish: 10 },
+  { race: "Martinsville",      date: "Mar 29", jPick: "Hamlin",   jFinish: 2,  jSurprise: "Gibbs",        jSFinish: 4,  mPick: "Blaney",    mFinish: 6,  mSurprise: "Preece",        mSFinish: 12 },
+  { bye: true },
+  { race: "Bristol",           date: "Apr 12", jPick: "Larson",   jFinish: null, jSurprise: "Gibbs",      jSFinish: null, mPick: "Bell",    mFinish: null, mSurprise: "Busch",       mSFinish: null },
+  { race: "Kansas",            date: "Apr 19", jPick: null },
+  { race: "Talladega",         date: "Apr 26", jPick: null },
+  { race: "Texas",             date: "May 3",  jPick: null },
+  { race: "Watkins Glen",      date: "May 10", jPick: null },
+  { race: "Dover (All Star Race)", date: "May 17", jPick: null, allStar: true, exhibition: true },
+  { race: "Charlotte",         date: "May 24", jPick: null },
+  { race: "Nashville",         date: "Jun 7",  jPick: null },
+  { race: "Michigan",          date: "Jun 14", jPick: null },
+  { race: "Pocono",            date: "Jun 21", jPick: null },
+  { race: "Sonoma",            date: "Jun 28", jPick: null },
+  { race: "Naval Base Coronado", date: "Jul 5", jPick: null },
+  { race: "Chicagoland",       date: "Jul 12", jPick: null },
+  { race: "EchoPark (Atlanta)", date: "Jul 19", jPick: null },
+  { race: "North Wilkesboro",  date: "Jul 26", jPick: null },
+  { race: "Indianapolis",      date: "Aug 9",  jPick: null },
+  { bye: true },
+  { playoff: true },
+  { race: "Iowa",              date: "Aug 16", jPick: null },
+  { race: "Richmond",          date: "Aug 23", jPick: null },
+  { race: "New Hampshire",     date: "Aug 29", jPick: null },
+  { race: "Daytona",           date: "Aug 29", jPick: null },
+  { race: "Champion Pick 'Em", date: "",       champ: true, jPick: "-", jFinish: "-", jSurprise: "-", jSFinish: "-", mPick: "-", mFinish: "-", mSurprise: "-", mSFinish: "-" },
+  { chase: true },
+  { race: "Darlington",        date: "Sep 6",  jPick: null },
+  { race: "WWTR",              date: "Sep 13", jPick: null },
+  { race: "Bristol",           date: "Sep 19", jPick: null },
+  { race: "Kansas",            date: "Sep 27", jPick: null },
+  { race: "Las Vegas",         date: "Oct 4",  jPick: null },
+  { race: "Charlotte",         date: "Oct 11", jPick: null },
+  { race: "Phoenix",           date: "Oct 18", jPick: null },
+  { race: "Talladega",         date: "Oct 25", jPick: null },
+  { race: "Martinsville",      date: "Nov 1",  jPick: null },
+  { race: "Homestead-Miami",   date: "Nov 8",  jPick: null },
+];
+
+// Determine current race: the first race with no finishes yet and a date <= today
+const TODAY = new Date('2026-04-12');
+function getRaceDate(r) {
+  if (!r.date) return null;
+  const months = {Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
+  const parts = r.date.split(' ');
+  return new Date(2026, months[parts[0]], parseInt(parts[1]));
+}
+function isCurrentRace(r) {
+  if (!r.race || r.bye || r.playoff || r.chase || r.champ || r.exhibition) return false;
+  const hasFinish = r.jFinish !== null && r.jFinish !== undefined && r.jFinish !== '-';
+  if (hasFinish) return false;
+  const d = getRaceDate(r);
+  if (!d) return false;
+  return d <= TODAY;
+}
+// Find the first upcoming/in-progress race
+const currentRace = RACES.find(r => isCurrentRace(r));
+
+// ============================================================
+// STATS — auto-calculated from RACES data
+// Exhibition races are excluded from averages
+// ============================================================
+function buildStats() {
+  const stats = [];
+  let jhpSum = 0, jhsSum = 0, jmpSum = 0, jmsSum = 0, n = 0;
+  RACES.forEach(r => {
+    if (r.bye || r.playoff || r.chase || r.champ || r.exhibition || !r.race) return;
+    // Only count if at least one finish is recorded
+    const hasFinish = r.jFinish !== null && r.jFinish !== undefined && r.jFinish !== '-';
+    if (!hasFinish) return;
+    jhpSum += Number(r.jFinish)  || 0;
+    jhsSum += Number(r.jSFinish) || 0;
+    jmpSum += Number(r.mFinish)  || 0;
+    jmsSum += Number(r.mSFinish) || 0;
+    n++;
+    stats.push({
+      race: r.race,
+      jhp: jhpSum / n,
+      jhs: jhsSum / n,
+      jmp: jmpSum / n,
+      jms: jmsSum / n,
+      n,
+    });
+  });
+  // Mark last entry as current
+  if (stats.length > 0) stats[stats.length - 1].current = true;
+  return stats;
+}
+
+// ============================================================
+// DUPLICATE DETECTION
+// ============================================================
+// Separate dupe pools: regular season vs Chase (reset applies)
+function getDupes(field, chaseOnly) {
+  const counts = {};
+  RACES.forEach(r => {
+    if (r.bye || r.playoff || r.exhibition || r.champ || !r[field]) return;
+    const inChase = !!r.isChase;
+    if (chaseOnly !== inChase) return; // only count within the right pool
+    const v = r[field];
+    if (v && v !== '-' && v !== null) counts[v] = (counts[v] || 0) + 1;
+  });
+  return new Set(Object.keys(counts).filter(k => counts[k] > 1));
+}
+
+function finishClass(n) {
+  if (n === null || n === undefined || n === '-') return 'finish-cell';
+  if (n <= 5) return 'finish-cell top5';
+  if (n <= 10) return 'finish-cell top10';
+  return 'finish-cell';
+}
+
+function cell(val, dupeSet, cls='') {
+  const isDupe = dupeSet && val && val !== '-' && val !== null && dupeSet.has(val);
+  return `<td class="${cls}${isDupe ? ' dupe' : ''}">${val ?? ''}</td>`;
+}
+
+function finishCell(val) {
+  const d = (val === null || val === undefined) ? '' : val;
+  return `<td class="${finishClass(val)}">${d}</td>`;
+}
+
+// ============================================================
+// RENDER PICKS TABLE
+// ============================================================
+function renderPicks() {
+  // Regular season dupe sets
+  const jPickDupes   = getDupes('jPick', false);
+  const jSDupes      = getDupes('jSurprise', false);
+  const mPickDupes   = getDupes('mPick', false);
+  const mSDupes      = getDupes('mSurprise', false);
+  // Chase dupe sets (independent pool)
+  const jPickDupesC  = getDupes('jPick', true);
+  const jSDupesC     = getDupes('jSurprise', true);
+  const mPickDupesC  = getDupes('mPick', true);
+  const mSDupesC     = getDupes('mSurprise', true);
+
+  let inChase = false;
+  let html = '';
+  RACES.forEach(r => {
+    if (r.bye) {
+      html += `<tr class="bye-row"><td colspan="9">— BYE WEEK —</td></tr>`;
+      return;
+    }
+    if (r.playoff) {
+      html += `<tr class="playoff-header"><td colspan="9">▶ PLAYOFFS</td></tr>`;
+      return;
+    }
+    if (r.chase) {
+      inChase = true;
+      html += `<tr class="playoff-header" style="background:var(--gold);"><td colspan="9" style="color:#111;font-family:Bebas Neue,sans-serif;letter-spacing:2px;">🏆 THE CHASE — NASCAR PLAYOFFS</td></tr>`;
+      return;
+    }
+    if (inChase) r.isChase = true;
+    if (r.champ) {
+      html += `<tr class="champ-row">
+        <td class="race-name">🏆 ${r.race}</td>
+        <td>-</td><td>-</td><td>-</td><td>-</td>
+        <td>-</td><td>-</td><td>-</td><td>-</td>
+      </tr>`;
+      return;
+    }
+
+    const empty = !r.jPick;
+    const isCurrent = currentRace && r.race === currentRace.race && r.date === currentRace.date;
+    const rowClass = isCurrent ? 'current-week-row' : '';
+    const dateBadge = r.date ? `<span class="date-badge">${r.date}</span>` : '';
+    html += `<tr class="${rowClass}">
+      <td class="race-name">${isCurrent ? '🟢 ' : ''}${r.allStar ? '⭐ ' : ''}${r.race}${dateBadge}</td>
+      ${empty ? `<td colspan="8" style="color:var(--muted);text-align:center;font-size:12px;">${isCurrent ? '⏳ picks pending' : '— upcoming —'}</td>` : `
+        ${cell(r.jPick, r.isChase ? jPickDupesC : jPickDupes, 'justin-pick')}
+        ${finishCell(r.jFinish)}
+        ${cell(r.jSurprise, r.isChase ? jSDupesC : jSDupes, 'justin-pick')}
+        ${finishCell(r.jSFinish)}
+        ${cell(r.mPick, r.isChase ? mPickDupesC : mPickDupes, 'joseph-pick')}
+        ${finishCell(r.mFinish)}
+        ${cell(r.mSurprise, r.isChase ? mSDupesC : mSDupes, 'joseph-pick')}
+        ${finishCell(r.mSFinish)}
+      `}
+    </tr>`;
+  });
+
+  document.getElementById('picks-body').innerHTML = html;
+}
+
+// ============================================================
+// RENDER STATS TABLE
+// ============================================================
+function renderStats() {
+  const STATS = buildStats();
+  let html = '';
+  if (STATS.length === 0) {
+    html = '<tr><td colspan="6" style="color:var(--muted);text-align:center;padding:20px;">No scored races yet.</td></tr>';
+  } else {
+    STATS.forEach(s => {
+      html += `<tr class="${s.current ? 'current-race' : ''}">
+        <td>${s.race}${s.current ? ' &larr; current' : ''}</td>
+        <td>${s.jhp.toFixed(2)}</td>
+        <td>${s.jhs.toFixed(2)}</td>
+        <td>${s.jmp.toFixed(2)}</td>
+        <td>${s.jms.toFixed(2)}</td>
+        <td>${s.n}</td>
+      </tr>`;
+    });
+  }
+  document.getElementById('stats-body').innerHTML = html;
+}
+
+// ============================================================
+// TABS
+// ============================================================
+function showTab(tab) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  event.target.classList.add('active');
+  if (tab === 'stats') renderChart();
+}
+
+// ============================================================
+// RENDER CHART
+// ============================================================
+function renderChart() {
+  const scored = buildStats();
+  const labels = scored.map(s => s.race);
+
+  const ctx = document.getElementById('avgChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'Justin Main (JHP)',
+          data: scored.map(s => +s.jhp.toFixed(2)),
+          borderColor: '#4a90d9',
+          backgroundColor: 'rgba(74,144,217,0.08)',
+          borderWidth: 2.5,
+          pointRadius: 4,
+          pointBackgroundColor: '#4a90d9',
+          tension: 0.3,
+          fill: false,
+        },
+        {
+          label: 'Justin Surprise (JHS)',
+          data: scored.map(s => +s.jhs.toFixed(2)),
+          borderColor: '#7ab8f5',
+          backgroundColor: 'rgba(122,184,245,0.05)',
+          borderWidth: 2,
+          borderDash: [5,4],
+          pointRadius: 4,
+          pointBackgroundColor: '#7ab8f5',
+          tension: 0.3,
+          fill: false,
+        },
+        {
+          label: 'Joseph Main (JMP)',
+          data: scored.map(s => +s.jmp.toFixed(2)),
+          borderColor: '#F5A623',
+          backgroundColor: 'rgba(245,166,35,0.08)',
+          borderWidth: 2.5,
+          pointRadius: 4,
+          pointBackgroundColor: '#F5A623',
+          tension: 0.3,
+          fill: false,
+        },
+        {
+          label: 'Joseph Surprise (JMS)',
+          data: scored.map(s => +s.jms.toFixed(2)),
+          borderColor: '#f5c97a',
+          backgroundColor: 'rgba(245,201,122,0.05)',
+          borderWidth: 2,
+          borderDash: [5,4],
+          pointRadius: 4,
+          pointBackgroundColor: '#f5c97a',
+          tension: 0.3,
+          fill: false,
+        },
+      ]
+    },
+    options: {
+      responsive: true,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#1a1a1a',
+          borderColor: '#2a2a2a',
+          borderWidth: 1,
+          titleColor: '#e8e8e8',
+          bodyColor: '#aaa',
+          callbacks: {
+            label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y.toFixed(2)} avg finish`
+          }
+        }
+      },
+      scales: {
+        x: {
+          ticks: { color: '#888', font: { size: 11 } },
+          grid: { color: 'rgba(255,255,255,0.05)' },
+        },
+        y: {
+          reverse: false,
+          min: 1,
+          max: 43,
+          ticks: { color: '#888', font: { size: 11 }, stepSize: 5 },
+          grid: { color: 'rgba(255,255,255,0.05)' },
+          title: { display: true, text: 'Avg Finish (lower = better)', color: '#555', font: { size: 11 } }
+        }
+      }
+    }
+  });
+}
+
+// ============================================================
+// RENDER STANDINGS CARDS
+// ============================================================
+function renderStandings() {
+  const STATS = buildStats();
+  if (STATS.length === 0) {
+    document.getElementById('standings-grid').innerHTML = '<p style="color:var(--muted);font-size:13px;">No races scored yet.</p>';
+    return;
+  }
+  const last = STATS[STATS.length - 1];
+  const entries = [
+    { player: 'Justin', name: 'Main Pick',     key: 'jhp', cls: 'justin' },
+    { player: 'Justin', name: 'Surprise Pick', key: 'jhs', cls: 'justin' },
+    { player: 'Joseph', name: 'Main Pick',     key: 'jmp', cls: 'joseph' },
+    { player: 'Joseph', name: 'Surprise Pick', key: 'jms', cls: 'joseph' },
+  ];
+  entries.sort((a, b) => last[a.key] - last[b.key]);
+  const html = entries.map((e, i) => `
+    <div class="stat-card ${e.cls}">
+      <div class="rank">${i + 1}</div>
+      <div class="player">${e.player}</div>
+      <div class="name">${e.name}</div>
+      <div class="avg">${last[e.key].toFixed(2)}</div>
+      <div class="avg-label">Avg Finish</div>
+
+    </div>`).join('');
+  document.getElementById('standings-grid').innerHTML = html;
+}
+
+// INIT
+renderPicks();
+renderStats();
+renderChart();
+renderStandings();
+</script>
+</body>
+</html>

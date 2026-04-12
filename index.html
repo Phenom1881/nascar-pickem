@@ -357,6 +357,27 @@
     font-weight: 600;
   }
 
+  .turn-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 1px;
+    padding: 1px 6px;
+    border-radius: 3px;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+  .turn-badge.jh {
+    background: rgba(74,144,217,0.2);
+    color: var(--justin-accent);
+    border: 1px solid rgba(74,144,217,0.4);
+  }
+  .turn-badge.jm {
+    background: rgba(245,166,35,0.2);
+    color: var(--joseph-accent);
+    border: 1px solid rgba(245,166,35,0.4);
+  }
+
   .date-badge {
     display: inline-block;
     font-size: 10px;
@@ -444,7 +465,7 @@
 
 <!-- LEGEND -->
 <div style="padding: 0 24px 4px;">
-  <span class="update-note">⚑ Last updated: April 12, 2026 — Bristol (Week 10 of 36)</span>
+  <span class="update-note">⚑ Last updated: April 12, 2026 — Bristol complete (Week 11: Kansas, Apr 19)</span>
 </div>
 <div class="legend">
   <div class="legend-item"><div class="legend-dot dot-dupe"></div> Duplicate pick (flagged)</div>
@@ -667,28 +688,28 @@ const RACES = [
   { race: "Darlington",        date: "Mar 22", jPick: "Elliott",  jFinish: 15, jSurprise: "Preece",       jSFinish: 13, mPick: "Briscoe",   mFinish: 12, mSurprise: "Jones",         mSFinish: 10 },
   { race: "Martinsville",      date: "Mar 29", jPick: "Hamlin",   jFinish: 2,  jSurprise: "Gibbs",        jSFinish: 4,  mPick: "Blaney",    mFinish: 6,  mSurprise: "Preece",        mSFinish: 12 },
   { bye: true },
-  { race: "Bristol",           date: "Apr 12", jPick: "Larson",   jFinish: null, jSurprise: "Gibbs",      jSFinish: null, mPick: "Bell",    mFinish: null, mSurprise: "Busch",       mSFinish: null },
-  { race: "Kansas",            date: "Apr 19", jPick: null },
-  { race: "Talladega",         date: "Apr 26", jPick: null },
-  { race: "Texas",             date: "May 3",  jPick: null },
-  { race: "Watkins Glen",      date: "May 10", jPick: null },
+  { race: "Bristol",           date: "Apr 12", turn: "JH", jPick: "Larson",   jFinish: 3,    jSurprise: "Gibbs",      jSFinish: 1,    mPick: "Bell",    mFinish: 25,   mSurprise: "Busch",       mSFinish: 27 },
+  { race: "Kansas",            date: "Apr 19", turn: "JM", jPick: null },
+  { race: "Talladega",         date: "Apr 26", turn: "JH", jPick: null },
+  { race: "Texas",             date: "May 3",  turn: "JM", jPick: null },
+  { race: "Watkins Glen",      date: "May 10", turn: "JH", jPick: null },
   { race: "Dover (All Star Race)", date: "May 17", jPick: null, allStar: true, exhibition: true },
-  { race: "Charlotte",         date: "May 24", jPick: null },
-  { race: "Nashville",         date: "Jun 7",  jPick: null },
-  { race: "Michigan",          date: "Jun 14", jPick: null },
-  { race: "Pocono",            date: "Jun 21", jPick: null },
-  { race: "Sonoma",            date: "Jun 28", jPick: null },
-  { race: "Naval Base Coronado", date: "Jul 5", jPick: null },
-  { race: "Chicagoland",       date: "Jul 12", jPick: null },
-  { race: "EchoPark (Atlanta)", date: "Jul 19", jPick: null },
-  { race: "North Wilkesboro",  date: "Jul 26", jPick: null },
-  { race: "Indianapolis",      date: "Aug 9",  jPick: null },
+  { race: "Charlotte",         date: "May 24", turn: "JM", jPick: null },
+  { race: "Nashville",         date: "Jun 7",  turn: "JH", jPick: null },
+  { race: "Michigan",          date: "Jun 14", turn: "JM", jPick: null },
+  { race: "Pocono",            date: "Jun 21", turn: "JH", jPick: null },
+  { race: "Sonoma",            date: "Jun 28", turn: "JM", jPick: null },
+  { race: "Naval Base Coronado", date: "Jul 5", turn: "JH", jPick: null },
+  { race: "Chicagoland",       date: "Jul 12", turn: "JM", jPick: null },
+  { race: "EchoPark (Atlanta)", date: "Jul 19", turn: "JH", jPick: null },
+  { race: "North Wilkesboro",  date: "Jul 26", turn: "JM", jPick: null },
+  { race: "Indianapolis",      date: "Aug 9",  turn: "JH", jPick: null },
   { bye: true },
   { playoff: true },
-  { race: "Iowa",              date: "Aug 16", jPick: null },
-  { race: "Richmond",          date: "Aug 23", jPick: null },
-  { race: "New Hampshire",     date: "Aug 29", jPick: null },
-  { race: "Daytona",           date: "Aug 29", jPick: null },
+  { race: "Iowa",              date: "Aug 16", turn: "JM", jPick: null },
+  { race: "Richmond",          date: "Aug 23", turn: "JH", jPick: null },
+  { race: "New Hampshire",     date: "Aug 29", turn: "JM", jPick: null },
+  { race: "Daytona",           date: "Aug 29", turn: "JH", jPick: null },
   { race: "Champion Pick 'Em", date: "",       champ: true, jPick: "-", jFinish: "-", jSurprise: "-", jSFinish: "-", mPick: "-", mFinish: "-", mSurprise: "-", mSFinish: "-" },
   { chase: true },
   { race: "Darlington",        date: "Sep 6",  jPick: null },
@@ -704,7 +725,7 @@ const RACES = [
 ];
 
 // Determine current race: the first race with no finishes yet and a date <= today
-const TODAY = new Date('2026-04-12');
+const TODAY = new Date();
 function getRaceDate(r) {
   if (!r.date) return null;
   const months = {Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
@@ -831,9 +852,10 @@ function renderPicks() {
     const isCurrent = currentRace && r.race === currentRace.race && r.date === currentRace.date;
     const rowClass = isCurrent ? 'current-week-row' : '';
     const dateBadge = r.date ? `<span class="date-badge">${r.date}</span>` : '';
+    const turnBadge = r.turn ? `<span class="turn-badge ${r.turn.toLowerCase()}">${r.turn}</span>` : '';
     html += `<tr class="${rowClass}">
-      <td class="race-name">${isCurrent ? '🟢 ' : ''}${r.allStar ? '⭐ ' : ''}${r.race}${dateBadge}</td>
-      ${empty ? `<td colspan="8" style="color:var(--muted);text-align:center;font-size:12px;">${isCurrent ? '⏳ picks pending' : '— upcoming —'}</td>` : `
+      <td class="race-name">${isCurrent ? '🟢 ' : ''}${r.allStar ? '⭐ ' : ''}${r.race}${turnBadge}</td>
+      ${empty ? `<td colspan="8" style="color:var(--muted);text-align:center;font-size:12px;">${isCurrent ? '⏳ picks pending' : r.date || '— upcoming —'}</td>` : `
         ${cell(r.jPick, r.isChase ? jPickDupesC : jPickDupes, 'justin-pick')}
         ${finishCell(r.jFinish)}
         ${cell(r.jSurprise, r.isChase ? jSDupesC : jSDupes, 'justin-pick')}

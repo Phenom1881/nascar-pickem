@@ -537,6 +537,12 @@
       <tbody id="stats-body">
       </tbody>
     </table>
+
+    <!-- HEAD TO HEAD SCOREBOARD -->
+    <div style="margin-top:24px;display:flex;gap:16px;flex-wrap:wrap;">
+      <div id="h2h-main" style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:20px 28px;min-width:220px;"></div>
+      <div id="h2h-surprise" style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:20px 28px;min-width:220px;"></div>
+    </div>
   </div>
   <!-- JUSTIN CHASE TAB -->
   <div id="tab-justin-chase" class="tab-content">
@@ -689,7 +695,7 @@ const RACES = [
   { race: "Martinsville",      date: "Mar 29", jPick: "Hamlin",   jFinish: 2,  jSurprise: "Gibbs",        jSFinish: 4,  mPick: "Blaney",    mFinish: 6,  mSurprise: "Preece",        mSFinish: 12 },
   { bye: true },
   { race: "Bristol",           date: "Apr 12", turn: "JH", jPick: "Larson",   jFinish: 3,    jSurprise: "Gibbs",      jSFinish: 1,    mPick: "Bell",    mFinish: 25,   mSurprise: "Busch",       mSFinish: 27 },
-  { race: "Kansas",            date: "Apr 19", turn: "JM", jPick: "Hamlin", jFinish: null, jSurprise: "Buescher", jSFinish: null, mPick: "Wallace", mFinish: null, mSurprise: "Herbst", mSFinish: null },
+  { race: "Kansas",            date: "Apr 19", turn: "JM", jPick: "Hamlin", jFinish: 4, jSurprise: "Buescher", jSFinish: 10, mPick: "Wallace", mFinish: 5, mSurprise: "Herbst", mSFinish: 14 },
   { race: "Talladega",         date: "Apr 26", turn: "JH", jPick: null },
   { race: "Texas",             date: "May 3",  turn: "JM", jPick: null },
   { race: "Watkins Glen",      date: "May 10", turn: "JH", jPick: null },
@@ -901,7 +907,7 @@ function showTab(tab) {
   document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
   document.getElementById('tab-' + tab).classList.add('active');
   event.target.classList.add('active');
-  if (tab === 'stats') renderChart();
+  if (tab === 'stats') { renderChart(); renderH2H(); }
 }
 
 // ============================================================
@@ -1028,11 +1034,55 @@ function renderStandings() {
   document.getElementById('standings-grid').innerHTML = html;
 }
 
+// ============================================================
+// RENDER HEAD TO HEAD
+// ============================================================
+function renderH2H() {
+  let justinMainWins = 0, josephMainWins = 0;
+  let justinSurpWins = 0, josephSurpWins = 0;
+
+  RACES.forEach(r => {
+    if (r.bye || r.playoff || r.chase || r.champ || r.exhibition || !r.race) return;
+    const jf  = r.jFinish,  mf  = r.mFinish;
+    const jsf = r.jSFinish, msf = r.mSFinish;
+    if (jf !== null && jf !== undefined && mf !== null && mf !== undefined) {
+      if (jf < mf) justinMainWins++; else josephMainWins++;
+    }
+    if (jsf !== null && jsf !== undefined && msf !== null && msf !== undefined) {
+      if (jsf < msf) justinSurpWins++; else josephSurpWins++;
+    }
+  });
+
+  function box(id, label, jWins, mWins) {
+    const jLead = jWins > mWins;
+    const mLead = mWins > jWins;
+    document.getElementById(id).innerHTML = `
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:2px;color:var(--muted);margin-bottom:12px;">${label}</div>
+      <div style="display:flex;align-items:center;gap:16px;">
+        <div style="text-align:center;">
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:42px;line-height:1;color:${jLead ? 'var(--justin-accent)' : 'var(--muted)'};">${jWins}</div>
+          <div style="font-size:11px;color:var(--justin-accent);margin-top:2px;">JUSTIN</div>
+        </div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--border);">—</div>
+        <div style="text-align:center;">
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:42px;line-height:1;color:${mLead ? 'var(--joseph-accent)' : 'var(--muted)'};">${mWins}</div>
+          <div style="font-size:11px;color:var(--joseph-accent);margin-top:2px;">JOSEPH</div>
+        </div>
+      </div>
+      <div style="font-size:11px;color:var(--muted);margin-top:10px;">${jLead ? '▲ Justin leads' : mLead ? '▲ Joseph leads' : 'Tied'}</div>
+    `;
+  }
+
+  box('h2h-main',     'MAIN PICK — HEAD TO HEAD',     justinMainWins, josephMainWins);
+  box('h2h-surprise', 'SURPRISE PICK — HEAD TO HEAD', justinSurpWins, josephSurpWins);
+}
+
 // INIT
 renderPicks();
 renderStats();
 renderChart();
 renderStandings();
+renderH2H();
 </script>
 </body>
 </html>

@@ -467,7 +467,7 @@
 
 <!-- LEGEND -->
 <div style="padding: 0 24px 4px;">
-  <span class="update-note">⚑ Last updated: April 12, 2026 — Bristol complete (Week 11: Kansas, Apr 19)</span>
+  <span class="update-note">⚑ Last updated: April 25, 2026 — Talladega complete</span>
 </div>
 <div class="legend">
   <div class="legend-item"><div class="legend-dot" style="background:#FFD700;"></div> Race winner</div>
@@ -551,21 +551,6 @@
       <div id="h2h-surprise" style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:20px 28px;min-width:220px;"></div>
     </div>
 
-    <!-- WIN/TOP5/TOP10 TRACKER -->
-    <div style="margin-top:16px;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:20px 24px;">
-      <div style="font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:2px;color:var(--muted);margin-bottom:16px;">PICK PERFORMANCE TRACKER</div>
-      <table style="width:100%;border-collapse:collapse;text-align:center;">
-        <thead>
-          <tr>
-            <th style="font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:1px;color:var(--muted);padding:6px 12px;text-align:left;border-bottom:1px solid var(--border);">Slot</th>
-            <th style="font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:1px;color:#FFD700;padding:6px 12px;border-bottom:1px solid var(--border);">🏆 Wins</th>
-            <th style="font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:1px;color:#4ade80;padding:6px 12px;border-bottom:1px solid var(--border);">Top 5</th>
-            <th style="font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:1px;color:#a3e635;padding:6px 12px;border-bottom:1px solid var(--border);">Top 10</th>
-          </tr>
-        </thead>
-        <tbody id="tracker-body"></tbody>
-      </table>
-    </div>
   </div>
   <!-- JUSTIN CHASE TAB -->
   <div id="tab-justin-chase" class="tab-content">
@@ -1104,41 +1089,6 @@ function renderH2H() {
   box('h2h-surprise', 'SURPRISE PICK — HEAD TO HEAD', justinSurpWins, josephSurpWins);
 }
 
-// ============================================================
-// RENDER PERFORMANCE TRACKER
-// ============================================================
-function renderTracker() {
-  const slots = [
-    { label: 'Justin Main',     finishKey: 'jFinish',  cls: 'justin' },
-    { label: 'Justin Surprise', finishKey: 'jSFinish', cls: 'justin' },
-    { label: 'Joseph Main',     finishKey: 'mFinish',  cls: 'joseph' },
-    { label: 'Joseph Surprise', finishKey: 'mSFinish', cls: 'joseph' },
-  ];
-
-  const counts = slots.map(s => ({ ...s, wins: 0, top5: 0, top10: 0 }));
-
-  RACES.forEach(r => {
-    if (r.bye || r.playoff || r.chase || r.champ || r.exhibition || !r.race) return;
-    counts.forEach(s => {
-      const f = r[s.finishKey];
-      if (f === null || f === undefined || f === '-') return;
-      const n = Number(f);
-      if (n === 1)  s.wins++;
-      if (n <= 5)   s.top5++;
-      if (n <= 10)  s.top10++;
-    });
-  });
-
-  const html = counts.map(s => `
-    <tr>
-      <td style="text-align:left;padding:8px 12px;font-size:13px;border-bottom:1px solid var(--border);color:${s.cls === 'justin' ? 'var(--justin-accent)' : 'var(--joseph-accent)'};">${s.label}</td>
-      <td style="padding:8px 12px;border-bottom:1px solid var(--border);font-family:'Bebas Neue',sans-serif;font-size:22px;color:${s.wins > 0 ? '#FFD700' : 'var(--muted)'};">${s.wins}</td>
-      <td style="padding:8px 12px;border-bottom:1px solid var(--border);font-family:'Bebas Neue',sans-serif;font-size:22px;color:${s.top5 > 0 ? '#4ade80' : 'var(--muted)'};">${s.top5}</td>
-      <td style="padding:8px 12px;border-bottom:1px solid var(--border);font-family:'Bebas Neue',sans-serif;font-size:22px;color:${s.top10 > 0 ? '#a3e635' : 'var(--muted)'};">${s.top10}</td>
-    </tr>`).join('');
-
-  document.getElementById('tracker-body').innerHTML = html;
-}
 
 // ============================================================
 // RENDER PICK TRACKERS
@@ -1197,7 +1147,6 @@ renderStats();
 renderChart();
 renderStandings();
 renderH2H();
-renderTracker();
 renderTracker();
 </script>
 </body>

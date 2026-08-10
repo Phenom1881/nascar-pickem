@@ -467,7 +467,7 @@
 
 <!-- LEGEND -->
 <div style="padding: 0 24px 4px;">
-  <span class="update-note">⚑ Last updated: July 26, 2026 — Indianapolis complete</span>
+  <span class="update-note">⚑ Last updated: August 9, 2026 — Iowa complete</span>
 </div>
 <div class="legend">
   <div class="legend-item"><div class="legend-dot" style="background:#FFD700;"></div> Race winner</div>
@@ -544,6 +544,26 @@
       <tbody id="stats-body">
       </tbody>
     </table>
+
+    <!-- CHASE TABLE (hidden until a playoff race is scored) -->
+    <div id="chase-stats-block" style="display:none;margin-top:28px;">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:var(--gold);margin-bottom:4px;">🏆 The Chase &mdash; Playoff Scoring</div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:14px;">Resets at the first playoff race &mdash; calculated independently of the season long table above</div>
+      <table class="stats-table">
+        <thead>
+          <tr>
+            <th>Race</th>
+            <th style="color:var(--justin-accent)">Justin Main (JHP)</th>
+            <th style="color:var(--justin-accent)">Justin Surprise (JHS)</th>
+            <th style="color:var(--joseph-accent)">Joseph Main (JMP)</th>
+            <th style="color:var(--joseph-accent)">Joseph Surprise (JMS)</th>
+            <th>Races Scored</th>
+          </tr>
+        </thead>
+        <tbody id="chase-stats-body">
+        </tbody>
+      </table>
+    </div>
 
     <!-- HEAD TO HEAD SCOREBOARD -->
     <div style="margin-top:24px;display:flex;gap:16px;flex-wrap:wrap;">
@@ -719,7 +739,7 @@ const RACES = [
   { race: "North Wilkesboro",  date: "Jul 19", turn: "JM", jPick: "Bell", jFinish: 19, jSurprise: "Preece", jSFinish: 10, mPick: "Larson", mFinish: 15, mSurprise: "Gilliland", mSFinish: 8 },
   { race: "Indianapolis",      date: "Jul 26", turn: "JH", jPick: "Larson", jFinish: 39, jSurprise: "Gilliland", jSFinish: 24, mPick: "Hamlin", mFinish: 5, mSurprise: "Heim", mSFinish: 1 },
   { bye: true },
-  { race: "Iowa",              date: "Aug 9",  turn: "JM", jPick: "Keselowski", jSurprise: "A. Dillon", mPick: "Blaney", mSurprise: "Bowman" },
+  { race: "Iowa",              date: "Aug 9",  turn: "JM", jPick: "Keselowski", jFinish: 27, jSurprise: "A. Dillon", jSFinish: 10, mPick: "Blaney", mFinish: 3, mSurprise: "Bowman", mSFinish: 34 },
   { race: "Richmond",          date: "Aug 15", turn: "JH", jPick: null },
   { race: "New Hampshire",     date: "Aug 23", turn: "JM", jPick: null },
   { race: "Daytona",           date: "Aug 29", turn: "JH", jPick: null },
@@ -736,6 +756,19 @@ const RACES = [
   { race: "Martinsville",      date: "Nov 1",  jPick: null },
   { race: "Homestead-Miami",   date: "Nov 8",  jPick: null },
 ];
+
+// ============================================================
+// FLAG CHASE RACES
+// Runs once, up front, so dupe pools and stats can rely on it.
+// Everything after the { chase: true } marker row is Chase.
+// ============================================================
+(function flagChaseRaces() {
+  let inChase = false;
+  RACES.forEach(r => {
+    if (r.chase) { inChase = true; return; }
+    if (inChase) r.isChase = true;
+  });
+})();
 
 // Determine current race: the first race with no finishes yet and a date <= today
 const TODAY = new Date();
@@ -759,12 +792,16 @@ const currentRace = RACES.find(r => isCurrentRace(r));
 // ============================================================
 // STATS — auto-calculated from RACES data
 // Exhibition races are excluded from averages
+// scope: 'all'   = season long, runs continuously through the Chase
+//        'chase' = Chase only, resets at the first playoff race
 // ============================================================
-function buildStats() {
+function buildStats(scope) {
+  const chaseOnly = scope === 'chase';
   const stats = [];
   let jhpSum = 0, jhsSum = 0, jmpSum = 0, jmsSum = 0, n = 0;
   RACES.forEach(r => {
     if (r.bye || r.playoff || r.chase || r.champ || r.exhibition || !r.race) return;
+    if (chaseOnly && !r.isChase) return;
     // Only count if at least one finish is recorded
     const hasFinish = r.jFinish !== null && r.jFinish !== undefined && r.jFinish !== '-';
     if (!hasFinish) return;
@@ -836,7 +873,6 @@ function renderPicks() {
   const mPickDupesC  = getDupes('mPick', true);
   const mSDupesC     = getDupes('mSurprise', true);
 
-  let inChase = false;
   let html = '';
   RACES.forEach(r => {
     if (r.bye) {
@@ -848,11 +884,9 @@ function renderPicks() {
       return;
     }
     if (r.chase) {
-      inChase = true;
       html += `<tr class="playoff-header" style="background:var(--gold);"><td colspan="9" style="color:#111;font-family:Bebas Neue,sans-serif;letter-spacing:2px;">🏆 THE CHASE — NASCAR PLAYOFFS</td></tr>`;
       return;
     }
-    if (inChase) r.isChase = true;
     if (r.champ) {
       html += `<tr class="champ-row">
         <td class="race-name">🏆 ${r.race}</td>
@@ -892,7 +926,7 @@ function renderPicks() {
 // RENDER STATS TABLE
 // ============================================================
 function renderStats() {
-  const STATS = buildStats();
+  const STATS = buildStats('all');
   let html = '';
   if (STATS.length === 0) {
     html = '<tr><td colspan="6" style="color:var(--muted);text-align:center;padding:20px;">No scored races yet.</td></tr>';
@@ -912,6 +946,34 @@ function renderStats() {
 }
 
 // ============================================================
+// RENDER CHASE STATS TABLE
+// Independent running average, resets at the first playoff race.
+// The whole block stays hidden until a Chase race has been scored.
+// ============================================================
+function renderChaseStats() {
+  const STATS = buildStats('chase');
+  const block = document.getElementById('chase-stats-block');
+  if (!block) return;
+  if (STATS.length === 0) {
+    block.style.display = 'none';
+    return;
+  }
+  block.style.display = '';
+  let html = '';
+  STATS.forEach(s => {
+    html += `<tr class="${s.current ? 'current-race' : ''}">
+      <td>${s.race}${s.current ? ' &larr; current' : ''}</td>
+      <td>${s.jhp.toFixed(2)}</td>
+      <td>${s.jhs.toFixed(2)}</td>
+      <td>${s.jmp.toFixed(2)}</td>
+      <td>${s.jms.toFixed(2)}</td>
+      <td>${s.n}</td>
+    </tr>`;
+  });
+  document.getElementById('chase-stats-body').innerHTML = html;
+}
+
+// ============================================================
 // TABS
 // ============================================================
 function showTab(tab) {
@@ -919,14 +981,14 @@ function showTab(tab) {
   document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
   document.getElementById('tab-' + tab).classList.add('active');
   event.target.classList.add('active');
-  if (tab === 'stats') { renderChart(); renderH2H(); renderTracker(); }
+  if (tab === 'stats') { renderChart(); renderH2H(); renderTracker(); renderChaseStats(); }
 }
 
 // ============================================================
 // RENDER CHART
 // ============================================================
 function renderChart() {
-  const scored = buildStats();
+  const scored = buildStats('all');
   const labels = scored.map(s => s.race);
 
   const ctx = document.getElementById('avgChart').getContext('2d');
@@ -1021,7 +1083,7 @@ function renderChart() {
 // RENDER STANDINGS CARDS
 // ============================================================
 function renderStandings() {
-  const STATS = buildStats();
+  const STATS = buildStats('all');
   if (STATS.length === 0) {
     document.getElementById('standings-grid').innerHTML = '<p style="color:var(--muted);font-size:13px;">No races scored yet.</p>';
     return;
@@ -1146,6 +1208,7 @@ function renderTracker() {
 // INIT
 renderPicks();
 renderStats();
+renderChaseStats();
 renderChart();
 renderStandings();
 renderH2H();

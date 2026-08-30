@@ -419,10 +419,9 @@
     border-color: rgba(74,222,128,0.3);
   }
   .pick-badge.incorrect {
-    background: rgba(100,100,100,0.15);
-    color: var(--muted);
-    border-color: rgba(100,100,100,0.2);
-    text-decoration: line-through;
+    background: rgba(232,35,26,0.15);
+    color: #E8231A;
+    border-color: rgba(232,35,26,0.4);
   }
 
   footer {
@@ -463,11 +462,19 @@
   <div class="stats-grid" id="standings-grid">
     <!-- Populated by renderStandings() -->
   </div>
+
+  <!-- CHASE STANDINGS (hidden until a playoff race is scored) -->
+  <div id="chase-standings-section" style="display:none;margin-top:26px;">
+    <h2 style="color:var(--gold);">🏆 Chase Standings <span style="font-size:12px;color:var(--muted);font-weight:400;">(last 10 races only)</span></h2>
+    <div class="stats-grid" id="chase-standings-grid">
+      <!-- Populated by renderStandings('chase') -->
+    </div>
+  </div>
 </div>
 
 <!-- LEGEND -->
 <div style="padding: 0 24px 4px;">
-  <span class="update-note">⚑ Last updated: August 23, 2026 — New Hampshire complete</span>
+  <span class="update-note">⚑ Last updated: August 29, 2026 — Daytona complete (regular season finale)</span>
 </div>
 <div class="legend">
   <div class="legend-item"><div class="legend-dot" style="background:#FFD700;"></div> Race winner</div>
@@ -586,23 +593,23 @@
           </tr>
         </thead>
         <tbody>
-          <tr><td>#1</td><td>Ross Chastain</td><td><span class="pick-badge regular">Pick</span></td></tr>
-          <tr><td>#2</td><td>Austin Cindric</td><td><span class="pick-badge regular">Pick</span></td></tr>
-          <tr><td>#5</td><td>Kyle Larson</td><td><span class="pick-badge regular">Pick</span></td></tr>
-          <tr><td>#8</td><td>Kyle Busch</td><td><span class="pick-badge regular">Pick</span></td></tr>
-          <tr><td>#9</td><td>Chase Elliott</td><td><span class="pick-badge regular">Pick</span></td></tr>
-          <tr><td>#11</td><td>Denny Hamlin</td><td><span class="pick-badge regular">Pick</span></td></tr>
-          <tr><td>#12</td><td>Ryan Blaney</td><td><span class="pick-badge regular">Pick</span></td></tr>
-          <tr><td>#19</td><td>Chase Briscoe</td><td><span class="pick-badge regular">Pick</span></td></tr>
-          <tr><td>#20</td><td>Christopher Bell</td><td><span class="pick-badge regular">Pick</span></td></tr>
-          <tr><td>#22</td><td>Joey Logano</td><td><span class="pick-badge regular">Pick</span></td></tr>
-          <tr><td>#23</td><td>Bubba Wallace</td><td><span class="pick-badge regular">Pick</span></td></tr>
-          <tr><td>#24</td><td>William Byron</td><td><span class="pick-badge regular">Pick</span></td></tr>
-          <tr><td>#45</td><td>Tyler Reddick</td><td><span class="pick-badge regular">Pick</span></td></tr>
-          <tr><td>#48</td><td>Alex Bowman</td><td><span class="pick-badge regular">Pick</span></td></tr>
-          <tr><td>#54</td><td>Ty Gibbs</td><td><span class="pick-badge hm">Honorable Mention</span></td></tr>
-          <tr><td>#60</td><td>Ryan Preece</td><td><span class="pick-badge regular">Pick</span></td></tr>
-          <tr><td>#97</td><td>Shane Van Gisbergen</td><td><span class="pick-badge regular">Pick</span></td></tr>
+          <tr><td>#1</td><td>Ross Chastain</td><td><span class="pick-badge incorrect">✗ Missed</span></td></tr>
+          <tr><td>#2</td><td>Austin Cindric</td><td><span class="pick-badge correct">✓ Made It</span></td></tr>
+          <tr><td>#5</td><td>Kyle Larson</td><td><span class="pick-badge correct">✓ Made It</span></td></tr>
+          <tr><td>#8</td><td>Kyle Busch</td><td><span class="pick-badge incorrect">✗ Missed</span></td></tr>
+          <tr><td>#9</td><td>Chase Elliott</td><td><span class="pick-badge correct">✓ Made It</span></td></tr>
+          <tr><td>#11</td><td>Denny Hamlin</td><td><span class="pick-badge correct">✓ Made It</span></td></tr>
+          <tr><td>#12</td><td>Ryan Blaney</td><td><span class="pick-badge correct">✓ Made It</span></td></tr>
+          <tr><td>#19</td><td>Chase Briscoe</td><td><span class="pick-badge correct">✓ Made It</span></td></tr>
+          <tr><td>#20</td><td>Christopher Bell</td><td><span class="pick-badge correct">✓ Made It</span></td></tr>
+          <tr><td>#22</td><td>Joey Logano</td><td><span class="pick-badge correct">✓ Made It</span></td></tr>
+          <tr><td>#23</td><td>Bubba Wallace</td><td><span class="pick-badge correct">✓ Made It</span></td></tr>
+          <tr><td>#24</td><td>William Byron</td><td><span class="pick-badge correct">✓ Made It</span></td></tr>
+          <tr><td>#45</td><td>Tyler Reddick</td><td><span class="pick-badge correct">✓ Made It</span></td></tr>
+          <tr><td>#48</td><td>Alex Bowman</td><td><span class="pick-badge incorrect">✗ Missed</span></td></tr>
+          <tr><td>#54</td><td>Ty Gibbs</td><td><span class="pick-badge correct">HM ✓</span></td></tr>
+          <tr><td>#60</td><td>Ryan Preece</td><td><span class="pick-badge correct">✓ Made It</span></td></tr>
+          <tr><td>#97</td><td>Shane Van Gisbergen</td><td><span class="pick-badge incorrect">✗ Missed</span></td></tr>
         </tbody>
       </table>
       <div style="margin-top:16px;font-size:11px;color:var(--muted);">* Chase field officially locks after the final Daytona race. Correct picks will be highlighted once the field is set.</div>
@@ -623,23 +630,23 @@
           </tr>
         </thead>
         <tbody>
-          <tr><td>#1</td><td>Ross Chastain</td><td><span class="pick-badge regular joseph">Pick</span></td></tr>
-          <tr><td>#5</td><td>Kyle Larson</td><td><span class="pick-badge regular joseph">Pick</span></td></tr>
-          <tr><td>#8</td><td>Kyle Busch</td><td><span class="pick-badge hm">Honorable Mention</span></td></tr>
-          <tr><td>#9</td><td>Chase Elliott</td><td><span class="pick-badge regular joseph">Pick</span></td></tr>
-          <tr><td>#11</td><td>Denny Hamlin</td><td><span class="pick-badge regular joseph">Pick</span></td></tr>
-          <tr><td>#12</td><td>Ryan Blaney</td><td><span class="pick-badge regular joseph">Pick</span></td></tr>
-          <tr><td>#17</td><td>Chris Buescher</td><td><span class="pick-badge regular joseph">Pick</span></td></tr>
-          <tr><td>#19</td><td>Chase Briscoe</td><td><span class="pick-badge regular joseph">Pick</span></td></tr>
-          <tr><td>#20</td><td>Christopher Bell</td><td><span class="pick-badge regular joseph">Pick</span></td></tr>
-          <tr><td>#22</td><td>Joey Logano</td><td><span class="pick-badge regular joseph">Pick</span></td></tr>
-          <tr><td>#23</td><td>Bubba Wallace</td><td><span class="pick-badge regular joseph">Pick</span></td></tr>
-          <tr><td>#24</td><td>William Byron</td><td><span class="pick-badge regular joseph">Pick</span></td></tr>
-          <tr><td>#45</td><td>Tyler Reddick</td><td><span class="pick-badge regular joseph">Pick</span></td></tr>
-          <tr><td>#48</td><td>Alex Bowman</td><td><span class="pick-badge regular joseph">Pick</span></td></tr>
-          <tr><td>#77</td><td>Carson Hocevar</td><td><span class="pick-badge regular joseph">Pick</span></td></tr>
-          <tr><td>#88</td><td>Connor Zilisch</td><td><span class="pick-badge regular joseph">Pick</span></td></tr>
-          <tr><td>#97</td><td>Shane Van Gisbergen</td><td><span class="pick-badge regular joseph">Pick</span></td></tr>
+          <tr><td>#1</td><td>Ross Chastain</td><td><span class="pick-badge incorrect">✗ Missed</span></td></tr>
+          <tr><td>#5</td><td>Kyle Larson</td><td><span class="pick-badge correct">✓ Made It</span></td></tr>
+          <tr><td>#8</td><td>Kyle Busch</td><td><span class="pick-badge incorrect">HM ✗</span></td></tr>
+          <tr><td>#9</td><td>Chase Elliott</td><td><span class="pick-badge correct">✓ Made It</span></td></tr>
+          <tr><td>#11</td><td>Denny Hamlin</td><td><span class="pick-badge correct">✓ Made It</span></td></tr>
+          <tr><td>#12</td><td>Ryan Blaney</td><td><span class="pick-badge correct">✓ Made It</span></td></tr>
+          <tr><td>#17</td><td>Chris Buescher</td><td><span class="pick-badge correct">✓ Made It</span></td></tr>
+          <tr><td>#19</td><td>Chase Briscoe</td><td><span class="pick-badge correct">✓ Made It</span></td></tr>
+          <tr><td>#20</td><td>Christopher Bell</td><td><span class="pick-badge correct">✓ Made It</span></td></tr>
+          <tr><td>#22</td><td>Joey Logano</td><td><span class="pick-badge correct">✓ Made It</span></td></tr>
+          <tr><td>#23</td><td>Bubba Wallace</td><td><span class="pick-badge correct">✓ Made It</span></td></tr>
+          <tr><td>#24</td><td>William Byron</td><td><span class="pick-badge correct">✓ Made It</span></td></tr>
+          <tr><td>#45</td><td>Tyler Reddick</td><td><span class="pick-badge correct">✓ Made It</span></td></tr>
+          <tr><td>#48</td><td>Alex Bowman</td><td><span class="pick-badge incorrect">✗ Missed</span></td></tr>
+          <tr><td>#77</td><td>Carson Hocevar</td><td><span class="pick-badge correct">✓ Made It</span></td></tr>
+          <tr><td>#88</td><td>Connor Zilisch</td><td><span class="pick-badge incorrect">✗ Missed</span></td></tr>
+          <tr><td>#97</td><td>Shane Van Gisbergen</td><td><span class="pick-badge incorrect">✗ Missed</span></td></tr>
         </tbody>
       </table>
       <div style="margin-top:16px;font-size:11px;color:var(--muted);">* Chase field officially locks after the final Daytona race. Correct picks will be highlighted once the field is set.</div>
@@ -742,19 +749,19 @@ const RACES = [
   { race: "Iowa",              date: "Aug 9",  turn: "JM", jPick: "Keselowski", jFinish: 27, jSurprise: "A. Dillon", jSFinish: 10, mPick: "Blaney", mFinish: 3, mSurprise: "Bowman", mSFinish: 34 },
   { race: "Richmond",          date: "Aug 15", turn: "JH", jPick: "Bowman", jFinish: 10, jSurprise: "Wallace", jSFinish: 20, mPick: "Bell", mFinish: 7, mSurprise: "Berry", mSFinish: 8 },
   { race: "New Hampshire",     date: "Aug 23", turn: "JM", jPick: "Blaney", jFinish: 1, jSurprise: "Z. Smith", jSFinish: 13, mPick: "Gibbs", mFinish: 6, mSurprise: "Preece", mSFinish: 9 },
-  { race: "Daytona",           date: "Aug 29", turn: "JH", jPick: null },
-  { race: "Champion Pick 'Em", date: "",       champ: true, jPick: "-", jFinish: "-", jSurprise: "-", jSFinish: "-", mPick: "-", mFinish: "-", mSurprise: "-", mSFinish: "-" },
+  { race: "Daytona",           date: "Aug 29", turn: "JH", jPick: "Buescher", jFinish: 40, jSurprise: "Ware", jSFinish: 35, mPick: "Bryon", mFinish: 22, mSurprise: "Gilliland", mSFinish: 19 },
+  { race: "Champion Pick 'Em", date: "",       champ: true, jChamp: null, mChamp: null },
   { chase: true },
-  { race: "Darlington",        date: "Sep 6",  jPick: null },
-  { race: "WWTR",              date: "Sep 13", jPick: null },
-  { race: "Bristol",           date: "Sep 19", jPick: null },
-  { race: "Kansas",            date: "Sep 27", jPick: null },
-  { race: "Las Vegas",         date: "Oct 4",  jPick: null },
-  { race: "Charlotte",         date: "Oct 11", jPick: null },
-  { race: "Phoenix",           date: "Oct 18", jPick: null },
-  { race: "Talladega",         date: "Oct 25", jPick: null },
-  { race: "Martinsville",      date: "Nov 1",  jPick: null },
-  { race: "Homestead-Miami",   date: "Nov 8",  jPick: null },
+  { race: "Darlington",        date: "Sep 6",  turn: "JH", jPick: null },
+  { race: "WWTR",              date: "Sep 13", turn: "JM", jPick: null },
+  { race: "Bristol",           date: "Sep 19", turn: "JH", jPick: null },
+  { race: "Kansas",            date: "Sep 27", turn: "JM", jPick: null },
+  { race: "Las Vegas",         date: "Oct 4",  turn: "JH", jPick: null },
+  { race: "Charlotte",         date: "Oct 11", turn: "JM", jPick: null },
+  { race: "Phoenix",           date: "Oct 18", turn: "JH", jPick: null },
+  { race: "Talladega",         date: "Oct 25", turn: "JM", jPick: null },
+  { race: "Martinsville",      date: "Nov 1",  turn: "JH", jPick: null },
+  { race: "Homestead-Miami",   date: "Nov 8",  turn: "JH", jPick: null },
 ];
 
 // ============================================================
@@ -840,6 +847,20 @@ function getDupes(field, chaseOnly) {
   return new Set(Object.keys(counts).filter(k => counts[k] > 1));
 }
 
+// Chase dupe pool: main and surprise share ONE pool per player.
+// A driver's 2nd appearance in the Chase (as main OR surprise) flags red.
+// pickField + surpriseField are that player's two columns.
+function getChaseDupes(pickField, surpriseField) {
+  const counts = {};
+  RACES.forEach(r => {
+    if (!r.isChase || r.champ) return;
+    [r[pickField], r[surpriseField]].forEach(v => {
+      if (v && v !== '-' && v !== null) counts[v] = (counts[v] || 0) + 1;
+    });
+  });
+  return new Set(Object.keys(counts).filter(k => counts[k] > 1));
+}
+
 function finishClass(n) {
   if (n === null || n === undefined || n === '-') return 'finish-cell';
   if (n === 1) return 'finish-cell winner';
@@ -868,10 +889,10 @@ function renderPicks() {
   const mPickDupes   = getDupes('mPick', false);
   const mSDupes      = getDupes('mSurprise', false);
   // Chase dupe sets (independent pool)
-  const jPickDupesC  = getDupes('jPick', true);
-  const jSDupesC     = getDupes('jSurprise', true);
-  const mPickDupesC  = getDupes('mPick', true);
-  const mSDupesC     = getDupes('mSurprise', true);
+  const jPickDupesC  = getChaseDupes('jPick', 'jSurprise');
+  const jSDupesC     = jPickDupesC; // same shared pool
+  const mPickDupesC  = getChaseDupes('mPick', 'mSurprise');
+  const mSDupesC     = mPickDupesC; // same shared pool
 
   let html = '';
   RACES.forEach(r => {
@@ -888,10 +909,12 @@ function renderPicks() {
       return;
     }
     if (r.champ) {
+      const jc = r.jChamp;
+      const mc = r.mChamp;
       html += `<tr class="champ-row">
         <td class="race-name">🏆 ${r.race}</td>
-        <td>-</td><td>-</td><td>-</td><td>-</td>
-        <td>-</td><td>-</td><td>-</td><td>-</td>
+        <td colspan="4" class="justin-pick" style="text-align:center;font-weight:600;">${jc && jc !== '-' ? jc : '<span style="color:var(--muted);font-weight:400;font-size:12px;">— pending —</span>'}</td>
+        <td colspan="4" class="joseph-pick" style="text-align:center;font-weight:600;">${mc && mc !== '-' ? mc : '<span style="color:var(--muted);font-weight:400;font-size:12px;">— pending —</span>'}</td>
       </tr>`;
       return;
     }
@@ -1082,9 +1105,15 @@ function renderChart() {
 // ============================================================
 // RENDER STANDINGS CARDS
 // ============================================================
-function renderStandings() {
-  const STATS = buildStats('all');
-  if (STATS.length === 0) {
+function renderStandings(scope) {
+  const isChase = scope === 'chase';
+  const gridId = isChase ? 'chase-standings-grid' : 'standings-grid';
+  const STATS = buildStats(isChase ? 'chase' : 'all');
+  if (isChase) {
+    const section = document.getElementById('chase-standings-section');
+    if (STATS.length === 0) { if (section) section.style.display = 'none'; return; }
+    if (section) section.style.display = '';
+  } else if (STATS.length === 0) {
     document.getElementById('standings-grid').innerHTML = '<p style="color:var(--muted);font-size:13px;">No races scored yet.</p>';
     return;
   }
@@ -1105,7 +1134,7 @@ function renderStandings() {
       <div class="avg-label">Avg Finish</div>
 
     </div>`).join('');
-  document.getElementById('standings-grid').innerHTML = html;
+  document.getElementById(gridId).innerHTML = html;
 }
 
 // ============================================================
@@ -1210,7 +1239,8 @@ renderPicks();
 renderStats();
 renderChaseStats();
 renderChart();
-renderStandings();
+renderStandings('all');
+renderStandings('chase');
 renderH2H();
 renderTracker();
 </script>
